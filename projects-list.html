@@ -1,0 +1,24 @@
+{{ define "projectsList" }}
+<form action="/projects/" method="POST">
+    <input type="text" name="project-name" id="project-name">
+    <button>Create new project</button>
+</form>
+
+<div id="projects">
+    <ul>
+    {{range .Projects}}
+        <li>
+            {{if eq $.SelectedProject.Id .Id}}
+                <div style="text-decoration: underline; display: inline">{{.Name}}</div>
+            {{else}}
+                <button hx-get="/projects/{{.Id}}" hx-target="body" hx-push-url="true">{{.Name}}</button>
+            {{end}}
+            {{if gt (len $.Projects) 1 }}
+                <button style="color: red" hx-delete="/projects/{{.Id}}" hx-swap="innerHTML" hx-target="body">X</button>
+            {{end}}
+            <input type="hidden" name="project-id" id="project-id" value={{.Id}}>
+        </li>
+    {{end}}
+    </ul>
+</div>
+{{end}}

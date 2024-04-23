@@ -1,0 +1,6 @@
+{{define "projectsDescription"}}
+<div class="row">
+    <textarea name="project-description" id="project-description" cols="30" rows="10" hx-put="/projects/{{.SelectedProject.Id}}/description" hx-trigger="input delay:500ms">{{.SelectedProject.Description}}</textarea>
+    {{ template "projectsStepsTable" .}}
+</div>
+{{end}}

@@ -1,0 +1,43 @@
+{{define "projectsStepsTable"}}
+<table class="table">
+    <thead>
+        <th>Step</th>
+        <th>Description</th>
+        <th></th>
+    </thead>
+    <tbody>
+        {{range .SelectedProject.Steps }}
+            <tr>
+                <td>{{.StepNumber}}</td>
+                <td>{{.Description}}</td>
+                <td></td>
+            </tr>
+        {{end}}
+
+
+        {{ if .SelectedProject.WithEditRow }}
+            <tr>
+                <form action="/project/{{.SelectedProject.Id}}/steps/" method="POST">
+                    <td>
+                        <input type="number" name="stepNumber" id="stepNumber" min="{{add (len .SelectedProject.Steps) 1 }}" value="{{add (len .SelectedProject.Steps) 1 }}">
+                        </td>
+                    <td>
+                        <input type="text" name="Description" id="Description" required="true">
+                    </td>
+                    <td>
+                        <button>Submit</button>
+                    </td>
+                </form>
+            </tr>
+        {{ else }}
+            <tr>
+                <td></td>
+                <td>
+                    <button hx-get="/project/{{.SelectedProject.Id}}/steps/?WithEditRow=true" hx-target="closest table" hx-swap="outerHTML">+</button>
+                </td>
+                <td></td>
+            </tr>
+        {{ end }}
+    </tbody>
+</table>
+{{end}}
