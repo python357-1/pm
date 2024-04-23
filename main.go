@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"html/template"
 	"net/http"
@@ -64,14 +65,32 @@ func add(x, y int) string {
 }
 
 func main() {
-	mux := http.NewServeMux()
-	repo := NewRepository()
+	isDevEnv := flag.Bool("dev", false, "Tells the program whether it is running in a development environment or not (defaults to false)")
+	flag.Parse()
 	funcMap := template.FuncMap{
 		"add":   add,
 		"parse": parse,
 	}
+	var templates *template.Template
+	if *isDevEnv {
+		templates = template.Must(template.New("stupidfuckingbitch").Funcs(funcMap).ParseFiles(
+			"main.html",
+			"projects-list.html",
+			"projects-description.html",
+			"projects-steps-table.html",
+		))
 
-	templates := template.Must(template.New("stupidfuckingbitch").Funcs(funcMap).ParseFiles("main.html", "projects-list.html", "projects-description.html", "projects-steps-table.html"))
+	} else {
+		templates = template.Must(template.New("stupidfuckingbitch").Funcs(funcMap).ParseFiles(
+			"/usr/share/pm/html/main.html",
+			"/usr/share/pm/html/projects-list.html",
+			"/usr/share/pm/html/projects-description.html",
+			"/usr/share/pm/html/projects-steps-table.html",
+		))
+	}
+	mux := http.NewServeMux()
+	repo := NewRepository()
+
 	mux.HandleFunc("POST /projects/", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("Matched POST /projects")
 		p := Project{
@@ -163,7 +182,7 @@ func main() {
 		http.Redirect(w, r, "/projects/"+projectId, http.StatusSeeOther)
 	})
 
-	port := ":8080"
+	port := "0.0.0.0:8080"
 	fmt.Println("Listening on http://localhost" + port)
 	http.ListenAndServe(port, mux)
 }

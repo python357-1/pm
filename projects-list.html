@@ -14,7 +14,7 @@
                 <button hx-get="/projects/{{.Id}}" hx-target="body" hx-push-url="true">{{.Name}}</button>
             {{end}}
             {{if gt (len $.Projects) 1 }}
-                <button style="color: red" hx-delete="/projects/{{.Id}}" hx-swap="innerHTML" hx-target="body">X</button>
+                <button style="color: red" hx-confirm="Are you sure you want to delete the project &quot;{{.Name}}&quot;?" hx-delete="/projects/{{.Id}}" hx-swap="innerHTML" hx-target="body">X</button>
             {{end}}
             <input type="hidden" name="project-id" id="project-id" value={{.Id}}>
         </li>
