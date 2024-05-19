@@ -1,7 +1,9 @@
 package main
 
 import (
+	"encoding/json"
 	"errors"
+	"fmt"
 
 	"github.com/google/uuid"
 )
@@ -101,4 +103,22 @@ func (r *Repository) AddStepToProject(projectId string, step ProjectStep) (bool,
 	}
 
 	return true, nil
+}
+
+func (r *Repository) ImportJson(jsonData string) {
+	var tempProjects []Project
+	err := json.Unmarshal([]byte(jsonData), &tempProjects)
+	panicIfErr(err)
+
+	fmt.Println(tempProjects)
+	for _, p := range tempProjects {
+		_, err := r.GetProjectById(p.Id)
+		if err == nil {
+			continue
+		}
+		r.AddProject(p)
+		for _, ps := range p.Steps {
+			r.AddStepToProject(p.Id, ps)
+		}
+	}
 }

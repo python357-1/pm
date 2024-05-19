@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
 	"fmt"
 	"html/template"
@@ -78,6 +79,7 @@ func main() {
 			"projects-list.html",
 			"projects-description.html",
 			"projects-steps-table.html",
+			"port.html",
 		))
 
 	} else {
@@ -86,6 +88,7 @@ func main() {
 			"/usr/share/pm/html/projects-list.html",
 			"/usr/share/pm/html/projects-description.html",
 			"/usr/share/pm/html/projects-steps-table.html",
+			"/usr/share/pm/html/port.html",
 		))
 	}
 	mux := http.NewServeMux()
@@ -180,6 +183,43 @@ func main() {
 		step := ProjectStep{Id: uuid.NewString(), ProjectId: projectId, StepNumber: stepNumber, Description: Description}
 		repo.AddStepToProject(projectId, step)
 		http.Redirect(w, r, "/projects/"+projectId, http.StatusSeeOther)
+	})
+
+	mux.HandleFunc("GET /export", func(w http.ResponseWriter, r *http.Request) {
+		JsonRep, err := json.Marshal(repo.GetAllProjects())
+		panicIfErr(err)
+		viewData := struct {
+			ExportData, PageTitle string
+			DisplaySubmit         bool
+		}{
+			ExportData:    string(JsonRep),
+			PageTitle:     "Export Data",
+			DisplaySubmit: false,
+		}
+		templates.ExecuteTemplate(w, "port", viewData)
+	})
+
+	mux.HandleFunc("GET /import", func(w http.ResponseWriter, r *http.Request) {
+		viewData := struct {
+			ExportData, PageTitle string
+			DisplaySubmit         bool
+		}{
+			ExportData:    "",
+			PageTitle:     "Import Data",
+			DisplaySubmit: true,
+		}
+		templates.ExecuteTemplate(w, "port", viewData)
+	})
+
+	mux.HandleFunc("POST /import", func(w http.ResponseWriter, r *http.Request) {
+		payload := r.FormValue("payload")
+		if payload == "" || payload == " " {
+			fmt.Println("Payload value was empty")
+		} else {
+			repo.ImportJson(payload)
+		}
+
+		http.Redirect(w, r, "/", http.StatusSeeOther)
 	})
 
 	port := "0.0.0.0:8080"

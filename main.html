@@ -18,7 +18,13 @@
         <button hx-get="/" hx-target="body" hx-swap="innerHTML" hx-push-url="true">
             Home
         </button>
-        <div class="row">
+        <button hx-get="/import" hx-target=".main">
+            Import
+        </button>
+        <button hx-get="/export" hx-target=".main">
+            Export
+        </button>
+        <div class="row main">
             <div class="col-6" id="projects-list">
                 {{ template "projectsList" . }}
             </div>

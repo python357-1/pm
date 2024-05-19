@@ -1,0 +1,14 @@
+{{define "port"}}
+
+<h1>{{.PageTitle}}</h1>
+
+<form action="/import" method="POST" style="width: 90vw; margin: auto;">
+    <textarea name="payload" id="payload" style="display: block; width: 100%">
+        {{.ExportData}}
+    </textarea>
+    {{if .DisplaySubmit}}
+        <button>Submit</button>
+    {{end}}
+</form>
+
+{{end}}
