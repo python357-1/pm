@@ -3,8 +3,8 @@ Description=Virtual Project Manager
 After=network.target
 
 [Service]
-ExecStart=/home/jordan/release/pm
-ExecReload=/home/jordan/release/pm
+ExecStart=<PM_BINARY>
+ExecReload=<PM_BINARY>
 Type=exec
 Restart=no
 
