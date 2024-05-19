@@ -1,0 +1,12 @@
+[Unit]
+Description=Virtual Project Manager
+After=network.target
+
+[Service]
+ExecStart=/home/jordan/release/pm
+ExecReload=/home/jordan/release/pm
+Type=exec
+Restart=no
+
+[Install]
+WantedBy=default.target
