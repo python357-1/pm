@@ -12,6 +12,8 @@ import (
 	"github.com/google/uuid"
 )
 
+const ProjectDir = ".."
+
 type ProjectStep struct {
 	Id          string
 	ProjectId   string
@@ -75,11 +77,11 @@ func main() {
 	var templates *template.Template
 	if *isDevEnv {
 		templates = template.Must(template.New("stupidfuckingbitch").Funcs(funcMap).ParseFiles(
-			"main.html",
-			"projects-list.html",
-			"projects-description.html",
-			"projects-steps-table.html",
-			"port.html",
+			ProjectDir+"/www/main.html",
+			ProjectDir+"/www/projects-list.html",
+			ProjectDir+"/www/projects-description.html",
+			ProjectDir+"/www/projects-steps-table.html",
+			ProjectDir+"/www/port.html",
 		))
 
 	} else {
